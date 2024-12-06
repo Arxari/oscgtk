@@ -25,28 +25,28 @@ jobs:
         with:
           msystem: MINGW64
           install: >-
-            mingw-w64-x86_64-gtk4
             mingw-w64-x86_64-python-pip
+            mingw-w64-x86_64-gtk4
             mingw-w64-x86_64-python-gobject
+            mingw-w64-x86_64-python-requests
+            mingw-w64-x86_64-python-dotenv
             mingw-w64-x86_64-adwaita-icon-theme
 
       - name: Install Python dependencies
+        shell: bash
         run: |
           python -m pip install --upgrade pip
-          pip install pyinstaller
-          pip install -r requirements.txt
-        shell: bash
+          python -m pip install pyinstaller
+          python -m pip install pygobject requests python-dotenv
 
       - name: Build Windows Executable
+        shell: bash
         run: |
           pyinstaller --onefile \
             --add-data "icons:icons" \
-            --add-binary "$(python -c 'import gi; print(gi._gi.__file__)')":. \
-            --add-binary "$(python -c 'import gi; print(gi.get_required_version("Gtk"))')":. \
             --name OpenShockClock \
             --windowed \
             openshockclock.py
-        shell: bash
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
